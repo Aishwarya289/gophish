@@ -2,7 +2,9 @@
   "admin_server": {
     "listen_url": "0.0.0.0:3333",
     "use_tls": false,
-    "trusted_origins": ["https://gophish-production-6d1b.up.railway.app"]
+    "trusted_origins": [
+      "https://gophish-production-6d1b.up.railway.app"
+    ]
   },
   "phish_server": {
     "listen_url": "0.0.0.0:80",
