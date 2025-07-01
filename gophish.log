@@ -1,0 +1,8 @@
+time="2025-07-01T18:17:47+10:00" level=info msg="Please login with the username admin and the password 4d3e8398836be462"
+time="2025-07-01T18:17:47+10:00" level=info msg="Starting IMAP monitor manager"
+time="2025-07-01T18:17:47+10:00" level=info msg="Starting phishing server at http://0.0.0.0:80"
+time="2025-07-01T18:17:47+10:00" level=info msg="Background Worker Started Successfully - Waiting for Campaigns"
+time="2025-07-01T18:17:47+10:00" level=info msg="Starting admin server at http://0.0.0.0:3333"
+time="2025-07-01T18:17:47+10:00" level=info msg="Starting new IMAP monitor for user admin"
+time="2025-07-01T18:19:04+10:00" level=info msg="CTRL+C Received... Gracefully shutting down servers"
+time="2025-07-01T18:19:04+10:00" level=fatal msg="http: Server closed"
