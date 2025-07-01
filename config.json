@@ -9,7 +9,7 @@
   ]
 }
 
-  },
+  ,
   "phish_server": {
     "listen_url": "0.0.0.0:80",
     "use_tls": false,
