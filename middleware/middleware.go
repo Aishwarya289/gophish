@@ -13,11 +13,12 @@ import (
 
 // CSRFExemptPrefixes are a list of routes that are exempt from CSRF protection
 var CSRFExemptPrefixes = []string{
-	"/api",
+	"/api",       // API endpoints
+	"/login",     // Allow login POST without CSRF (required for proxy hosting like Railway)
+	"/logout",    // Optional: logout without CSRF
 }
 
-// CSRFExceptions is a middleware that prevents CSRF checks on routes listed in
-// CSRFExemptPrefixes.
+// CSRFExceptions is middleware that skips CSRF protection for exempt routes
 func CSRFExceptions(handler http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		for _, prefix := range CSRFExemptPrefixes {
@@ -30,8 +31,7 @@ func CSRFExceptions(handler http.Handler) http.HandlerFunc {
 	}
 }
 
-// Use allows us to stack middleware to process the request
-// Example taken from https://github.com/gorilla/mux/pull/36#issuecomment-25849172
+// Use stacks middleware functions for a handler
 func Use(handler http.HandlerFunc, mid ...func(http.Handler) http.HandlerFunc) http.HandlerFunc {
 	for _, m := range mid {
 		handler = m(handler)
@@ -39,21 +39,14 @@ func Use(handler http.HandlerFunc, mid ...func(http.Handler) http.HandlerFunc) h
 	return handler
 }
 
-// GetContext wraps each request in a function which fills in the context for a given request.
-// This includes setting the User and Session keys and values as necessary for use in later functions.
+// GetContext attaches session and user context to each request
 func GetContext(handler http.Handler) http.HandlerFunc {
-	// Set the context here
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Parse the request form
-		err := r.ParseForm()
-		if err != nil {
+		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Error parsing request", http.StatusInternalServerError)
+			return
 		}
-		// Set the context appropriately here.
-		// Set the session
 		session, _ := Store.Get(r, "gophish")
-		// Put the session in the context so that we can
-		// reuse the values in different handlers
 		r = ctx.Set(r, "session", session)
 		if id, ok := session.Values["id"]; ok {
 			u, err := models.GetUser(id.(int64))
@@ -66,13 +59,11 @@ func GetContext(handler http.Handler) http.HandlerFunc {
 			r = ctx.Set(r, "user", nil)
 		}
 		handler.ServeHTTP(w, r)
-		// Remove context contents
 		ctx.Clear(r)
 	}
 }
 
-// RequireAPIKey ensures that a valid API key is set as either the api_key GET
-// parameter, or a Bearer token.
+// RequireAPIKey validates an API key or Bearer token for secured routes
 func RequireAPIKey(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -84,13 +75,10 @@ func RequireAPIKey(handler http.Handler) http.Handler {
 		}
 		r.ParseForm()
 		ak := r.Form.Get("api_key")
-		// If we can't get the API key, we'll also check for the
-		// Authorization Bearer token
 		if ak == "" {
 			tokens, ok := r.Header["Authorization"]
 			if ok && len(tokens) >= 1 {
-				ak = tokens[0]
-				ak = strings.TrimPrefix(ak, "Bearer ")
+				ak = strings.TrimPrefix(tokens[0], "Bearer ")
 			}
 		}
 		if ak == "" {
@@ -109,13 +97,10 @@ func RequireAPIKey(handler http.Handler) http.Handler {
 	})
 }
 
-// RequireLogin checks to see if the user is currently logged in.
-// If not, the function returns a 302 redirect to the login page.
+// RequireLogin ensures the user is authenticated, or redirects to login
 func RequireLogin(handler http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if u := ctx.Get(r, "user"); u != nil {
-			// If a password change is required for the user, then redirect them
-			// to the login page
 			currentUser := u.(models.User)
 			if currentUser.PasswordChangeRequired && r.URL.Path != "/reset_password" {
 				q := r.URL.Query()
@@ -132,13 +117,9 @@ func RequireLogin(handler http.Handler) http.HandlerFunc {
 	}
 }
 
-// EnforceViewOnly is a global middleware that limits the ability to edit
-// objects to accounts with the PermissionModifyObjects permission.
+// EnforceViewOnly ensures edit access is restricted unless permitted
 func EnforceViewOnly(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// If the request is for any non-GET HTTP method, e.g. POST, PUT,
-		// or DELETE, we need to ensure the user has the appropriate
-		// permission.
 		if r.Method != http.MethodGet && r.Method != http.MethodHead && r.Method != http.MethodOptions {
 			user := ctx.Get(r, "user").(models.User)
 			access, err := user.HasPermission(models.PermissionModifyObjects)
@@ -155,9 +136,7 @@ func EnforceViewOnly(next http.Handler) http.Handler {
 	})
 }
 
-// RequirePermission checks to see if the user has the requested permission
-// before executing the handler. If the request is unauthorized, a JSONError
-// is returned.
+// RequirePermission checks if user has required permission
 func RequirePermission(perm string) func(http.Handler) http.HandlerFunc {
 	return func(next http.Handler) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
@@ -176,19 +155,16 @@ func RequirePermission(perm string) func(http.Handler) http.HandlerFunc {
 	}
 }
 
-// ApplySecurityHeaders applies various security headers according to best-
-// practices.
+// ApplySecurityHeaders sets security-related HTTP headers
 func ApplySecurityHeaders(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		csp := "frame-ancestors 'none';"
-		w.Header().Set("Content-Security-Policy", csp)
+		w.Header().Set("Content-Security-Policy", "frame-ancestors 'none';")
 		w.Header().Set("X-Frame-Options", "DENY")
 		next.ServeHTTP(w, r)
 	}
 }
 
-// JSONError returns an error in JSON format with the given
-// status code and message
+// JSONError writes an error response in JSON format
 func JSONError(w http.ResponseWriter, c int, m string) {
 	cj, _ := json.MarshalIndent(models.Response{Success: false, Message: m}, "", "  ")
 	w.Header().Set("Content-Type", "application/json")
