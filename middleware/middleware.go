@@ -13,9 +13,9 @@ import (
 
 // CSRFExemptPrefixes are a list of routes that are exempt from CSRF protection
 var CSRFExemptPrefixes = []string{
-	"/api",       // API endpoints
-	"/login",     // Allow login POST without CSRF (required for proxy hosting like Railway)
-	"/logout",    // Optional: logout without CSRF
+	"/api",
+	"/login",
+	"/logout",
 }
 
 // CSRFExceptions is middleware that skips CSRF protection for exempt routes
