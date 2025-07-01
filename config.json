@@ -5,7 +5,7 @@
   "use_tls": true,
   "cert_path": "gophish_admin.crt",
   "key_path": "gophish_admin.key",
-  "csrf_key": "your-csrf-secret-key",
+  
   "trusted_origins": ["https://gophish-production-6d1b.up.railway.app"]
 }
 
