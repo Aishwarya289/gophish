@@ -1,66 +1,74 @@
-![gophish logo](https://raw.github.com/gophish/gophish/master/static/images/gophish_purple.png)
+# Phishing Simulation Project Using Gophish
 
-Gophish
-=======
+##  Overview
 
-![Build Status](https://github.com/gophish/gophish/workflows/CI/badge.svg) [![GoDoc](https://godoc.org/github.com/gophish/gophish?status.svg)](https://godoc.org/github.com/gophish/gophish)
+This project demonstrates how to deploy and use [Gophish](https://getgophish.com), an open-source phishing simulation framework, to test user awareness against phishing attacks. The deployment was hosted on [Railway](https://railway.app), enabling a cloud-accessible admin portal and phishing server.
 
-Gophish: Open-Source Phishing Toolkit
+##  Tools & Technologies
 
-[Gophish](https://getgophish.com) is an open-source phishing toolkit designed for businesses and penetration testers. It provides the ability to quickly and easily setup and execute phishing engagements and security awareness training.
+* **Gophish** - Open-source phishing simulation tool
+* **Railway** - Cloud deployment platform
+* **GitHub** - Source code management
+* **Mailtrap / Custom SMTP** - Email delivery service (optional)
 
-### Install
+##  Key Features
 
-Installation of Gophish is dead-simple - just download and extract the zip containing the [release for your system](https://github.com/gophish/gophish/releases/), and run the binary. Gophish has binary releases for Windows, Mac, and Linux platforms.
+* Deployed Gophish using Railway with forked GitHub repository
+* Configured `config.json` for public deployment
+* Added trusted origins to bypass 403 Forbidden error
+* Created and launched a test phishing campaign
+* Tracked real-time user actions (email sent/opened/clicked/submitted)
 
-### Building From Source
-**If you are building from source, please note that Gophish requires Go v1.10 or above!**
+## Steps Performed
 
-To build Gophish from source, simply run ```git clone https://github.com/gophish/gophish.git``` and ```cd``` into the project source directory. Then, run ```go build```. After this, you should have a binary called ```gophish``` in the current directory.
+1. **Forked Gophish Repository** from GitHub to personal account
+2. **Deployed to Railway** using Railway's GitHub integration
+3. **Edited `config.json`:**
 
-### Docker
-You can also use Gophish via the official Docker container [here](https://hub.docker.com/r/gophish/gophish/).
+   * Changed `listen_url` to `0.0.0.0:3333`
+   * Set `use_tls` to `false`
+   * Added Railway domain in `trusted_origins`
+4. **Added Environment Variable** `PORT=3333` on Railway
+5. **Launched Deployment** and verified admin panel login
+6. **Created Phishing Campaign:**
 
-### Setup
-After running the Gophish binary, open an Internet browser to https://localhost:3333 and login with the default username and password listed in the log output.
-e.g.
-```
-time="2020-07-29T01:24:08Z" level=info msg="Please login with the username admin and the password 4304d5255378177d"
-```
+   * Added target group and phishing email template
+   * Configured landing page and sending profile
+7. **Tracked Campaign Progress** through dashboard
 
-Releases of Gophish prior to v0.10.1 have a default username of `admin` and password of `gophish`.
+## 🗃 Campaign Screenshot
 
-### Documentation
+![image](https://github.com/user-attachments/assets/6d9eea46-a6f0-4545-97c4-8a5014affffe)
 
-Documentation can be found on our [site](http://getgophish.com/documentation). Find something missing? Let us know by filing an issue!
 
-### Issues
+##  Learnings
 
-Find a bug? Want more features? Find something missing in the documentation? Let us know! Please don't hesitate to [file an issue](https://github.com/gophish/gophish/issues/new) and we'll get right on it.
+* How phishing attacks are simulated in a secure environment
+* Importance of security awareness training
+* Gophish deployment, configuration, and debugging (e.g. `403 Forbidden` fix)
+* Cloud deployment using Railway + GitHub CI
 
-### License
-```
-Gophish - Open-Source Phishing Framework
+##  Live Admin Panel
 
-The MIT License (MIT)
+https://gophish-production-6d1b.up.railway.app
 
-Copyright (c) 2013 - 2020 Jordan Wright
+##  Why This Project Matters
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software ("Gophish Community Edition") and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Phishing remains a top vector for cybersecurity breaches. This project helps organizations and individuals:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+* Improve staff security awareness
+* Test resilience to social engineering
+* Understand attack patterns and countermeasures
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-```
+##  Future Enhancements
+
+* Connect Mailtrap or Gmail SMTP for real delivery
+* Add realistic HTML templates for phishing
+* Run multi-stage phishing simulations
+* Generate reports and integrate with dashboards
+
+## 📚 References
+
+* [Gophish Docs](https://docs.getgophish.com/)
+* [Railway Hosting](https://railway.app/)
+* [AlphaSec Blog Guide](https://alphasec.io/phishing-attack-simulation-gophish/)
