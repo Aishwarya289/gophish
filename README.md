@@ -48,9 +48,6 @@ This project demonstrates how to deploy and use [Gophish](https://getgophish.com
 * Gophish deployment, configuration, and debugging (e.g. `403 Forbidden` fix)
 * Cloud deployment using Railway + GitHub CI
 
-##  Live Admin Panel
-
-https://gophish-production-6d1b.up.railway.app
 
 ##  Why This Project Matters
 
