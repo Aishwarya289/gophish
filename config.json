@@ -19,7 +19,7 @@
   "migrations_prefix": "db/db_",
   "contact_address": "admin@example.com",
   "logging": {
-    "filename": "gophish.log",
+    "filename": "",
     "level": "info"
   }
 }
