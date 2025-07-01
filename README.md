@@ -36,7 +36,7 @@ This project demonstrates how to deploy and use [Gophish](https://getgophish.com
    * Configured landing page and sending profile
 7. **Tracked Campaign Progress** through dashboard
 
-## 🗃 Campaign Screenshot
+## Campaign Screenshot
 
 ![image](https://github.com/user-attachments/assets/6d9eea46-a6f0-4545-97c4-8a5014affffe)
 
@@ -67,7 +67,7 @@ Phishing remains a top vector for cybersecurity breaches. This project helps org
 * Run multi-stage phishing simulations
 * Generate reports and integrate with dashboards
 
-## 📚 References
+##  References
 
 * [Gophish Docs](https://docs.getgophish.com/)
 * [Railway Hosting](https://railway.app/)
