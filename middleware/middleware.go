@@ -16,6 +16,7 @@ var CSRFExemptPrefixes = []string{
 	"/api",
 	"/login",
 	"/logout",
+	 "/reset_password",
 }
 
 // CSRFExceptions is middleware that skips CSRF protection for exempt routes
